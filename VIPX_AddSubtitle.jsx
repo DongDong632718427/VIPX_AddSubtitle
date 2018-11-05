@@ -174,7 +174,10 @@ function ButtonImportOnClick(){
         var file = File.openDialog ("Select an ass/txt file",  ["Text:*.txt", "All files:*.*"], false);
         if(file!=null){
                 file.open('r');
-                CheckOutText (file);
+                file = CheckOutText (file);
+                file = RexTextFile(file);
+                //file = RexTextTimeObject(file);
+                PrintArray (file);
             }
     }
 
@@ -184,6 +187,7 @@ function CheckOutText(file){
             var textArray = new Array();
             textArray = a.split("\n");
             CheckOutArraySpace(textArray);
+            return textArray;
         }
     else{
             alert("File is null!");
@@ -192,12 +196,11 @@ function CheckOutText(file){
 
 function CheckOutArraySpace(array){
         for(var i=0; i<array.length; i++){
-            array[i] = Trim(array[i], "g");
+            //array[i] = Trim(array[i], "g");
                 if((array[i] == "")||(array[i] == "\n")){  
                         array.splice (i, 1);
                     }
             }
-        PrinfArray(array);  
     }
 
 function Trim(str,is_global){
@@ -210,7 +213,7 @@ function Trim(str,is_global){
     return result;
 }
 
-function PrinfArray(array){
+function PrintArray(array){
     var result = "";
         for(var i=0; i<array.length; i++){
                 result = result + array[i] + "\n";
@@ -219,8 +222,18 @@ function PrinfArray(array){
         alert(result);
     }
 
-function RexText(text){
+function RexTextFile(array){
+        var sequenceArray = new Array();
+        var re = /^(\w{1,2}\:\w{2}\:\w{2}\:\w{2})\-\-(\w{1,2}\:\w{2}\:\w{2}\:\w{2})\s*(?=\w)([\s\S]*)$/; 
         
+        for(var i=0; i<array.length; i++){
+                sequenceArray[i] = re.exec (array[i]);
+                sequenceArray[i].splice (0,1);
+            }
+        return sequenceArray;
     }
 
+function RexTextTimeObject(){
+    
+    }
 CreateUI ();
