@@ -1,7 +1,7 @@
 ﻿
 var win = null;
 var winTitle = "VIPX_AddSubtitles";
-var tipTitle = "Please Choose the txt of subtitles script!";
+var tipTitle = "Please choose the text of subtitles script!";
 var aboutMessage = "The JS is to import and cut subtitles by text.\n"+
                                 "       made by DongDong   ver:0.1   Beta";
 
@@ -171,9 +171,56 @@ function CreateTimeObject(hour, minute, second, millisecond){
 
 
 function ButtonImportOnClick(){
-        alert(123);
+        var file = File.openDialog ("Select an ass/txt file",  ["Text:*.txt", "All files:*.*"], false);
+        if(file!=null){
+                file.open('r');
+                CheckOutText (file);
+            }
     }
 
+function CheckOutText(file){
+    if(file!=null){
+            var a = file.read();
+            var textArray = new Array();
+            textArray = a.split("\n");
+            CheckOutArraySpace(textArray);
+        }
+    else{
+            alert("File is null!");
+        }
+  }
 
+function CheckOutArraySpace(array){
+        for(var i=0; i<array.length; i++){
+            array[i] = Trim(array[i], "g");
+                if((array[i] == "")||(array[i] == "\n")){  
+                        array.splice (i, 1);
+                    }
+            }
+        PrinfArray(array);  
+    }
+
+function Trim(str,is_global){
+
+    var result;
+    result = str.replace(/(^\s+)|(\s+$)/g,"");
+    if(is_global.toLowerCase()=="g"){
+     result = result.replace(/\s/g,"");
+     }
+    return result;
+}
+
+function PrinfArray(array){
+    var result = "";
+        for(var i=0; i<array.length; i++){
+                result = result + array[i] + "\n";
+            }
+        
+        alert(result);
+    }
+
+function RexText(text){
+        
+    }
 
 CreateUI ();
