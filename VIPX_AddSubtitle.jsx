@@ -1,5 +1,5 @@
 ﻿var frameRate = 29.97;
-var win = null;
+var win = null
 var winTitle = "VIPX_AddSubtitles";
 var tipTitle = "Please choose the text of subtitles script!";
 var aboutMessage = "The JS is to import and cut subtitles by text.\n"+
