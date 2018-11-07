@@ -10,7 +10,7 @@ var buttonImport = null;
 var buttonAbout = null;
 
 
-function CreateTimeObject(hour, minute, second, millisecond){
+function CreateTimeObject(hour, minute, second, millisecond){           //时间类
         
         var obj = new Object();
         obj.hour = 0;
@@ -79,7 +79,7 @@ function CreateTimeObject(hour, minute, second, millisecond){
         return obj;
     }
 
-function CreateSequnceObject(){
+function CreateSequnceObject(){      //序列类
         var obj = new Object();
         obj.text = "";
         obj.inTime = null;
@@ -87,7 +87,7 @@ function CreateSequnceObject(){
 
         return obj;
     }
-function CreateUI(){
+function CreateUI(){                //创建UI
         win = new Window ("palette", winTitle, undefined, {resizeable:false});
         win.orientation = "column";
         win.add("statictext", undefined, tipTitle);            
@@ -106,14 +106,14 @@ function CreateUI(){
     }
 
 
-function ButtonImportOnClick(){
+function ButtonImportOnClick(){                    //button点击事件
         var file = File.openDialog ("Select an ass/txt file",  ["Text:*.txt", "All files:*.*"], false);
         if(file!=null){
                 file.open('r');
-                file = CheckOutText (file);
-                file = RexTextFile(file);
-                file = RexTextTimeObject(file);
-                alert(PrintFinal (file));
+                file = CheckOutText (file);             //逐行读取txt并根据\n存入数组
+                file = RexTextFile(file);                   //正则数组中的每一个元素，分配入点，出点，text
+                file = RexTextTimeObject(file);         //正则入点出点并构造时间类
+                alert(PrintFinal (file));           
             }
 
     }
@@ -170,7 +170,7 @@ function PrintFinal(array){
     }
 function RexTextFile(array){
         var sequenceArray = new Array();
-        var re = /^(\w{1,2}\:\w{2}\:\w{2}\:\w{2})\-\-(\w{1,2}\:\w{2}\:\w{2}\:\w{2})\s*(?=\w)([\s\S]*)$/; 
+        var re = /^\s*(\w{1,2}\:\w{1,2}\:\w{1,2}\:\w{1,2})\s*\-\s*\-\s*(\w{1,2}\:\w{1,2}\:\w{1,2}\:\w{1,2})\s*([\s\S]*)$/; 
         
         for(var i=0; i<array.length; i++){
                 sequenceArray[i] = re.exec (array[i]);
@@ -195,7 +195,17 @@ function RexTextTimeObject(array){
             }
         return sequenceArray;
     }
-function CheckStringAndAddEnert(text){
-        
+
+function ImportToAe(array){
+        //alert(PrintFinal (array));
+        var newComp = app.project.items.addComp("SubTitles", 1440, 1080, 1, 3600, frameRate);
+        var nullControl = newComp.layers.addNull(3600);
+        for(var i=0; i<array.length; i++){
+                var text = newComp.layers.addText(array[i].text);
+                text.inPoint = array[i].inTime.second;
+                text.outPoint = array[i].outTime.second;
+                text.parent = nullControl;
+            }
+        nullControl.position.setValue([75,1024,0]);
     }
 CreateUI ();

@@ -1,1 +1,2 @@
-0:10:04:00--0:12:46:00    Can I speak English?
+00:06:00:18 -- 00:06:06:15	"Birds have hard mouths,
+and we call this mouth a bill."
