@@ -126,7 +126,6 @@ function CheckOutText(file){
             var a = file.read();
             var textArray = new Array();
             textArray = a.split("\n");
-            alert(textArray);
             textArray = CheckOutArraySpace(textArray);
             return textArray;
         }
@@ -136,23 +135,13 @@ function CheckOutText(file){
   }
 
 function CheckOutArraySpace(array){
-    
-    var num = 0;
-    var length = array.length;
-    
-    while(array[0] = ""||(array[0] = "\n") ){
-            alert("!");
+    var re = /\w/g;
+    for(var i=0; i<array.length; i++){
+        if(!re.test(array[i])){
+                array.splice(i, 1);
+                i = i-1;
+            }
         }
-    
-    for(var i=0; i<length; i++){
-            
-          if((array[i] == "")||(array[i] == "\n")){  
-              array.splice (i, 1);
-              i = i-1;
-              num++;
-             }
-      }
-        alert("num:" + num );
         return array;
     }
 
