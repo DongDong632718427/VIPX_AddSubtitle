@@ -111,9 +111,12 @@ function ButtonImportOnClick(){                    //button点击事件
         if(file!=null){
                 file.open('r');
                 file = CheckOutText (file);             //逐行读取txt并根据\n存入数组
-                file = RexTextFile(file);                   //正则数组中的每一个元素，分配入点，出点，text
-                file = RexTextTimeObject(file);         //正则入点出点并构造时间类
-                alert(PrintFinal (file));           
+                file = RexWholeFile (file);
+                //file = RexTextFile(file);                   //正则数组中的每一个元素，分配入点，出点，text
+                //file = RexTextTimeObject(file);         //正则入点出点并构造时间类
+                //PrintFinal (file);
+                alert(PrintFinal (file), "You can checkout what you inport:");
+                ImportToAe(file);
             }
 
     }
@@ -123,7 +126,8 @@ function CheckOutText(file){
             var a = file.read();
             var textArray = new Array();
             textArray = a.split("\n");
-            CheckOutArraySpace(textArray);
+            alert(textArray);
+            textArray = CheckOutArraySpace(textArray);
             return textArray;
         }
     else{
@@ -132,12 +136,24 @@ function CheckOutText(file){
   }
 
 function CheckOutArraySpace(array){
-        for(var i=0; i<array.length; i++){
+    
+    var num = 0;
+    var length = array.length;
+    
+    while(array[0] = ""||(array[0] = "\n") ){
+            alert("!");
+        }
+    
+    for(var i=0; i<length; i++){
             
-                if((array[i] == "")||(array[i] == "\n")){  
-                        array.splice (i, 1);
-                    }
-            }
+          if((array[i] == "")||(array[i] == "\n")){  
+              array.splice (i, 1);
+              i = i-1;
+              num++;
+             }
+      }
+        alert("num:" + num );
+        return array;
     }
 
 function Trim(str,is_global){
@@ -168,15 +184,39 @@ function PrintFinal(array){
             }
         return result;
     }
-function RexTextFile(array){
+
+function RexWholeFile(array){
+        var rexArray = new Array();
         var sequenceArray = new Array();
+        var re = /^\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\-\s*\-\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*([\s\S]*)$/;
+        
+        for(var i=0; i<array.length; i++){
+                if(re.exec (array[i]) == null){
+                        alert("Error! Please CheckOut your data! The Line " + (i+1) +   " data of   '"+ array[i] + "'   has problem!", "REX Error");
+                    }
+                rexArray[i] = re.exec (array[i]);
+                rexArray[i].splice (0,1);
+            }
+        for(var j=0; j<rexArray.length; j++){
+                sequenceArray[j] = CreateSequnceObject ();
+                sequenceArray[j].inTime = CreateTimeObject(rexArray[j][0], rexArray[j][1], rexArray[j][2], rexArray[j][3]);
+                sequenceArray[j].outTime = CreateTimeObject(rexArray[j][4], rexArray[j][5], rexArray[j][6], rexArray[j][7]);
+                sequenceArray[j].text = rexArray[j][8];
+                //alert(sequenceArray[j].text);
+            }
+        return sequenceArray;
+    }
+
+function RexTextFile(array){
+        var rexArray = new Array();
+        
         var re = /^\s*(\w{1,2}\:\w{1,2}\:\w{1,2}\:\w{1,2})\s*\-\s*\-\s*(\w{1,2}\:\w{1,2}\:\w{1,2}\:\w{1,2})\s*([\s\S]*)$/; 
         
         for(var i=0; i<array.length; i++){
-                sequenceArray[i] = re.exec (array[i]);
-                sequenceArray[i].splice (0,1);
+                rexArray[i] = re.exec (array[i]);
+                rexArray[i].splice (0,1);
             }
-        return sequenceArray;
+        return rexArray;
     }
 
 function RexTextTimeObject(array){
@@ -207,5 +247,8 @@ function ImportToAe(array){
                 text.parent = nullControl;
             }
         nullControl.position.setValue([75,1024,0]);
+        
     }
+
+
 CreateUI ();
