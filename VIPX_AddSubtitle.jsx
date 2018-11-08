@@ -177,7 +177,7 @@ function PrintFinal(array){
 function RexWholeFile(array){
         var rexArray = new Array();
         var sequenceArray = new Array();
-        var re = /^\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\-\s*\-\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*([\s\S]*)$/;
+        var re = /^\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\-\s*\-\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*(.*)$/;
         
         for(var i=0; i<array.length; i++){
                 if(re.exec (array[i]) == null){
@@ -231,8 +231,8 @@ function ImportToAe(array){
         var nullControl = newComp.layers.addNull(3600);
         for(var i=0; i<array.length; i++){
                 var text = newComp.layers.addText(array[i].text);
-                text.inPoint = array[i].inTime.second;
-                text.outPoint = array[i].outTime.second;
+                text.inPoint = array[i].inTime.totalSecond;
+                text.outPoint = array[i].outTime.totalSecond;
                 text.parent = nullControl;
             }
         nullControl.position.setValue([75,1024,0]);
