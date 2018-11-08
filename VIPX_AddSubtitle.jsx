@@ -1,4 +1,4 @@
-﻿var frameRate = 29.97;
+﻿var frameRate = 30.0;
 var win = null;
 var winTitle = "VIPX_AddSubtitles";
 var tipTitle = "Please choose the text of subtitles script!";
@@ -181,7 +181,7 @@ function RexWholeFile(array){
         
         for(var i=0; i<array.length; i++){
                 if(re.exec (array[i]) == null){
-                        alert("Error! Please CheckOut your data! The Line " + (i+1) +   " data of   '"+ array[i] + "'   has problem!", "REX Error");
+                        alert("Error! Please CheckOut your data! The Line " + i +   " data of   '"+ array[i] + "'   has problem!", "REX Error");
                     }
                 rexArray[i] = re.exec (array[i]);
                 rexArray[i].splice (0,1);
