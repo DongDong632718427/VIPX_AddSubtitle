@@ -228,15 +228,11 @@ function RexTextTimeObject(array){
 function ImportToAe(array){
         //alert(PrintFinal (array));
         var newComp = app.project.items.addComp("SubTitles", 1440, 1080, 1, 3600, frameRate);
-        var nullControl = newComp.layers.addNull(3600);
         for(var i=0; i<array.length; i++){
                 var text = newComp.layers.addText(array[i].text);
                 text.inPoint = array[i].inTime.totalSecond;
                 text.outPoint = array[i].outTime.totalSecond;
-                text.parent = nullControl;
-            }
-        nullControl.position.setValue([75,1024,0]);
-        
+            }        
     }
 
 
