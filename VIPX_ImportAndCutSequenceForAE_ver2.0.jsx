@@ -5,16 +5,21 @@ var aboutMessage = "The JS is to import and cut the sequnce by text.\n"+
                                 "       made by DongDong   ver:2.0";
 var tipMessage = "Input Your Path!";
 var editInText = null;
+var frameRateIn = null;
 
 function CreateUI(){
-        win = new Window ("palette", winTitle, undefined, {resizeable:false});
+        win = new Window ("palette", winTitle, undefined, {resizeable:true});
         win.orientation = "column";
 
         var textGroup = win.add("group", undefined);
         textGroup.orientation = "row";
         var staticShowText = textGroup.add("statictext", undefined, "Folder Path:");
-        editInText = textGroup.add("editText", undefined, "yahha");
-        editInText.characters = 30;
+        editInText = textGroup.add("editText", undefined, tipMessage);
+        editInText.characters = 20;
+        var frameRateInStatic = textGroup.add("statictext", undefined, "FrameRate:");
+        frameRateIn = textGroup.add("editText", undefined, 30.00);
+        frameRateIn.characters = 4;
+        
         
         var buttonGroup = win.add ("group", undefined);
         buttonGroup.orientation = "row";
@@ -34,15 +39,50 @@ function ButtonImportOnClick(){
         if(editInText.text == tipMessage||editInText.text == ""){
                 alert("Please Input Your Path!");
             }else{
+                    frameRate = parseFloat (frameRateIn.text);
                     var file = File.openDialog ("Select an ass/txt file",  ["Text:*.txt", "All files:*.*"], false);
                     if(file!=null){
                             file.open('r');
                             file = CheckOutText (file);
                             file = RexWholeFile (file);
-                            alert(PrintSequenceArray (file));
+                            ImportAndCutSequence (file);
+                            
                         }
                 }
     }
+
+function ImportAndCutSequence(array){
+        var file = new Array();
+        var io = new Array();
+        var video = new Array();
+        for(var i=0; i<array.length; i++){
+            try{
+                file[i] = File(array[i].name);
+                io[i] = new ImportOptions(file[i]);
+                video[i]= app.project.importFile(io[i]);
+            }catch(error){
+                    alert(error);
+                }
+        }
+        if(video != null){
+             var index = 0; 
+             var folder = app.project.items.addFolder("VideoFootage");
+             var firstClipComp = app.project.items.addComp("Firts Clip", 1440, 1080, 1, 3600, frameRate);
+             firstClipComp.openInViewer();
+             for(var i=0; i<array.length; i++){
+                    video[i].parentFolder = folder;
+                    var layer = firstClipComp.layers.add(video[i]);
+                    layer.inPoint = array[i].inTime.totalSecond;
+                    layer.outPoint = array[i].outTime.totalSecond;
+                    layer.startTime = index-array[i].inTime.totalSecond;
+                    index = index + layer.outPoint - layer.inPoint;
+                 }
+         }else{
+                alert("Import Error!");
+             }
+         
+    }
+
 
 function PrintSequenceArray(array){
         var result = "";
@@ -93,7 +133,7 @@ function RexWholeFile(array){
             
         for(var j=0; j<rexArray.length; j++){
                 sequenceArray[j] = CreateSequnceObject ();
-                sequenceArray[j].name = rexArray[j][0];               
+                sequenceArray[j].name = editInText.text + "\\"+ rexArray[j][0] + ".mp4";               
                 sequenceArray[j].inTime = CreateTimeObject (rexArray[j][1], rexArray[j][2], rexArray[j][3], rexArray[j][4]);
                 sequenceArray[j].outTime = CreateTimeObject(rexArray[j][5], rexArray[j][6], rexArray[j][7], rexArray[j][8]);
                 
