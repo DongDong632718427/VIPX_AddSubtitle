@@ -5,6 +5,18 @@ var tipTitle = "Please choose the text of subtitles script!";
 var aboutMessage = "The JS is to import and cut subtitles by text.\n"+
                                 "       made by DongDong   ver:0.1   Beta";
 
+
+var textStyle = {
+        font : "Rockwell-Bold",
+        fontSize: 25,
+        applyFill: true,
+        fillColor : [1,1,1],
+        applyStroke: false,
+        justification: ParagraphJustification.LEFT_JUSTIFY,
+        tracking: 30
+    };
+
+
 var buttonGroup = null;
 var buttonImport = null;
 var buttonAbout = null;
@@ -227,11 +239,32 @@ function RexTextTimeObject(array){
 
 function ImportToAe(array){
         //alert(PrintFinal (array));
+        /*
+            var textStyle = {
+            font : "Rockwell-Bold",
+            fontSize: 60,
+            applyFill: true,
+            fillColor : [1,1,0],
+            applyStroke: false,
+            justification: ParagraphJustification.LEFT_JUSTIFY,
+            tracking: 30
+        };*/
         var newComp = app.project.items.addComp("SubTitles", 1440, 1080, 1, 3600, frameRate);
+        newComp.openInViewer();
         for(var i=0; i<array.length; i++){
-                var text = newComp.layers.addText(array[i].text);
-                text.inPoint = array[i].inTime.totalSecond;
-                text.outPoint = array[i].outTime.totalSecond;
+                var textLayer = newComp.layers.addText(array[i].text);
+                var textProp = textLayer.property("Source Text");
+                var textDocument = textProp.value;
+                textDocument.fontSize = textStyle.fontSize;
+                textDocument.font = textStyle.font;
+                textDocument.applyFill = textStyle.applyFill;
+                textDocument.fillColor = textStyle.fillColor;
+                textDocument.applyStroke = textStyle.applyStroke;
+                textDocument.justification = textStyle.justification;
+                textDocument.tracking =textStyle.tracking;
+                textProp.setValue(textDocument);
+                textLayer.inPoint = array[i].inTime.totalSecond;
+                textLayer.outPoint = array[i].outTime.totalSecond;
             }        
     }
 
