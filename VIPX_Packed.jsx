@@ -69,7 +69,7 @@ function CreateWinNormalFirstClipUI(){
      var textGroup = win.add("group", undefined);
      textGroup.orientation = "row";
      var staticShowText = textGroup.add("statictext", undefined, "Folder Path:");
-     var editInText = textGroup.add("editText", undefined, "Import the text");
+     var editInText = textGroup.add("editText", undefined, "C:\\Users\\DongDong\\Desktop\\JS\\VIPX\\GK-15");
      editInText.characters = 20;
 
      var buttonGroup = win.add ("group", undefined);
@@ -88,6 +88,7 @@ function CreateWinNormalFirstClipUI(){
 				file.open('r');
 				file = CheckOutText(file);		//删除所有空行  包括第一行  返回数组
 				file = RexNormalFirstClipFile(file);	//正则表达式
+				ImportAndCutSequence(file);
 			}
 		}else{
 			alert("Please input the right folder path!");
@@ -108,7 +109,7 @@ function CreateWinNormalFirstClipUI(){
 		
 		for(var j=0; j<rexArray.length; j++){
 			sequnceArray[j] = {
-				name:editInText.text + "\\" + rexArray[j][0] + ".mp4",
+				path:editInText.text + "\\" + rexArray[j][0] + ".mp4",
 				inTime: CreateTimeObject(rexArray[j][1], rexArray[j][2], rexArray[j][3], rexArray[j][4]),
 				outTime: CreateTimeObject(rexArray[j][5], rexArray[j][6], rexArray[j][7], rexArray[j][8])
 			};
@@ -116,7 +117,46 @@ function CreateWinNormalFirstClipUI(){
 		
 		return sequnceArray;
 	 }
+	 
+	 function ImportAndCutSequence(array){
+		var fileArray = new Array();
+		var ioArray = new Array();
+		var videoArray = new Array();
+		try{
+			for(var i = 0; i<array.length; i++){
+				fileArray[i] = File(array[i].path);
+				ioArray[i] = new ImportOptions(fileArray[i]);
+				videoArray[i] = app.project.importFile(ioArray[i]);
+			}
+		}catch(error){
+			alert(error, "Error!");
+		}
+		if(videoArray != null){
+			var index = 0;
+			var folder = app.project.items.addFolder("VideoFootage");
+			var firstClipComp = app.project.items.addComp("FirstClip", winMain.compositionWidth, winMain.compositionHeight, 1, 3600, winMain.frameRate);
+			firstClipComp.openInViewer();
+			for(i=0; i<array.length; i++){
+					videoArray[i].parentFolder = folder;
+					var layer = firstClipComp.layers.add(videoArray[i]);
+					layer.inPoint = array[i].inTime.totalSecond;
+					layer.outPoint = array[i].outTime.totalSecond;
+					layer.startTime = index - array[i].inTime.totalSecond;
+					index = index + layer.outPoint - layer.inPoint;
+				}
+			}else{
+				alert("Import Error!");
+			}
+			
+	 }
 
+	 function PrintArray(array){
+		var result = "";
+		for(var i=0; i<array.length; i++){
+			result = result + "Num:" + i + "  Path:" + array[i].path + " ImTime:" + array[i].inTime.PrintTime() + " OutTime" + array[i].outTime.PrintTime() + "\n";
+		}
+		return result;
+	 }
 
 	 return win;
 }
