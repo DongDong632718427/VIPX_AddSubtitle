@@ -63,6 +63,11 @@ function CreateMainUI(){
 		winOnlyOneClip.show();
 	}
 
+	buttonAddSubtitles.onClick = function(){
+		ResetSettings();
+		winAddSubtitles.show();
+	}
+
 	function ResetSettings(){
 		winMain.frameRate = parseFloat(editTextFrameRate.text);
 		winMain.compositionWidth = parseInt(editTextCompostionWidth.text);
@@ -185,7 +190,6 @@ function CreateWinNormalFirstClipUI(){
 	 return win;
 }
 
-
 function CreateOnlyOneClipUI(){
 	var win = new Window("palette", winOnlyOneClipTitle, undefined, {resizeable:true, closeButton:false});
 	win.alignChildren = "center";
@@ -294,6 +298,16 @@ function CreateOnlyOneClipUI(){
 
 	}
 
+	return win;
+}
+
+function CreateAddSubtitlesUI(){
+	var win = new Window("palette", winAddSubtitlesTitle, undefined, {resizeable:true, closeButton:false});
+	var cancelButton = win.add("button", undefined, "Cancel");
+
+	cancelButton.onClick = function(){
+		win.hide();
+	}
 	return win;
 }
 
@@ -413,4 +427,5 @@ function SelectRadioButton(radioArray){
 var winMain = CreateMainUI();
 var winNormalFirstClip = CreateWinNormalFirstClipUI();
 var winOnlyOneClip = CreateOnlyOneClipUI();
+var winAddSubtitles = CreateAddSubtitlesUI();
 winMain.show();
