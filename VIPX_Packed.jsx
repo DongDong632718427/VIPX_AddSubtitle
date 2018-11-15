@@ -5,7 +5,7 @@ var winDoubleSoundClipTitle = "VIPX_DoubleSoundClip";
 var winAddSubtitlesTitle = "VIPX_AddSubtitles";
 
 var aboutMessage = "The JS is packed.\n"+
-                                "made by DongDong   ver:2.0";
+                                "made by DongDong   ver:1.0";
 
 var frameRate = "30.0";
 var compositionWidth = "1440";
@@ -13,8 +13,12 @@ var compositionHeight = "1080";
 
 
 var REX = {
-	normalFirstClipRex: /^\s*(\S*)\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\-\s*\-\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*$/
-
+	normalFirstClipRex_Double: /^\s*(\S*)\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\-\s*\-\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*$/,
+	normalFirstClipRex_One: /^\s*(\S*)\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\-\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*$/,
+	normalFirstClipRex_Space: /^\s*(\S*)\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*$/,
+	onlyOneClipRex_Double: /^\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\-\s*\-\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*$/,
+	onlyOneClipRex_One: /^\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\-\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*$/,
+	onlyOneClipRex_Space: /^\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*$/
 };
 
 
@@ -54,6 +58,11 @@ function CreateMainUI(){
 			winNormalFirstClip.show();	
 	}
 
+	buttonOnlyOneClip.onClick = function(){
+		ResetSettings();
+		winOnlyOneClip.show();
+	}
+
 	function ResetSettings(){
 		winMain.frameRate = parseFloat(editTextFrameRate.text);
 		winMain.compositionWidth = parseInt(editTextCompostionWidth.text);
@@ -66,27 +75,35 @@ function CreateWinNormalFirstClipUI(){
 	var win = new Window ("palette", winNormalFirstClipTitle, undefined, {resizeable:true, closeButton:false});
     win.orientation = "column";
 
-     var textGroup = win.add("group", undefined);
-     textGroup.orientation = "row";
-     var staticShowText = textGroup.add("statictext", undefined, "Folder Path:");
-     var editInText = textGroup.add("editText", undefined, "C:\\Users\\DongDong\\Desktop\\JS\\VIPX\\GK-15");
-     editInText.characters = 20;
+    var textGroup = win.add("group", undefined);
+    textGroup.orientation = "row";
+    var staticShowText = textGroup.add("statictext", undefined, "Folder Path:");
+    var editInText = textGroup.add("editText", undefined, "D:\\Work\\L15\\GK-L15\\GK-15");
+    editInText.characters = 20;
 
-     var buttonGroup = win.add ("group", undefined);
-     buttonGroup.orientation = "row";
-     var buttonImport = buttonGroup.add("button", undefined, "Import");
-     var buttonCancel = buttonGroup.add("button", undefined, "Cancel");
+	var radioGroup = win.add("Group", undefined);
+	radioGroup.orientation = "row";
+	radioGroup.alignChildren = "left";
+	radioGroup.add("radiobutton", undefined, "Double");
+	radioGroup.add("radiobutton", undefined, "One");
+	radioGroup.add("radiobutton", undefined, "Space");
+	radioGroup.children[0].value = true;
 
-	 buttonCancel.onClick = function(){
+    var buttonGroup = win.add ("group", undefined);
+    buttonGroup.orientation = "row";
+    var buttonImport = buttonGroup.add("button", undefined, "Import");
+    var buttonCancel = buttonGroup.add("button", undefined, "Cancel");
+
+	buttonCancel.onClick = function(){
 		win.hide();
-	 }
+	}
 
 	 buttonImport.onClick = function(){
 		if(editInText.text!=null||""){
 			var file = File.openDialog("Select an txt file", ["Text:*.txt", "All files:*.*"], false);
 			if(file!=null){
 				file.open('r');
-				file = CheckOutText(file);		//删除所有空行  包括第一行  返回数组
+				file = CheckOutFile(file);		//删除所有空行  包括第一行  返回数组
 				file = RexNormalFirstClipFile(file);	//正则表达式
 				ImportAndCutSequence(file);
 			}
@@ -98,11 +115,18 @@ function CreateWinNormalFirstClipUI(){
 	 function RexNormalFirstClipFile(array){
 		var rexArray = new Array();
 		var sequnceArray = new Array();
+		var re = null;
+		var k = SelectRadioButton(radioGroup);
+		switch(k){
+			case 0: re = REX.normalFirstClipRex_Double; break;
+			case 1: re = REX.normalFirstClipRex_One; break;
+			case 2: re = REX.normalFirstClipRex_Space; break;
+		}
 		for(var i=0; i<array.length; i++){
-			if(REX.normalFirstClipRex.exec(array[i]) == null){
+			if(re.exec(array[i]) == null){
 				alert("Error! Please checkout your data! The Line " + i + "data of " +  array[i] +  "has problem!", "REX Error");
 			}
-			rexArray[i] = REX.normalFirstClipRex(array[i]);
+			rexArray[i] = re(array[i]);
 			rexArray[i].splice(0,1);
 		}
 
@@ -159,6 +183,118 @@ function CreateWinNormalFirstClipUI(){
 	 }
 
 	 return win;
+}
+
+
+function CreateOnlyOneClipUI(){
+	var win = new Window("palette", winOnlyOneClipTitle, undefined, {resizeable:true, closeButton:false});
+	win.alignChildren = "center";
+	var timeLinePanel = win.add("panel", undefined, "TimeLine:");
+	var editInText = timeLinePanel.add("edittext", [0,0,200,300], "",  {multiline: true, wantReturn: true});
+
+	var radioGroup = win.add("Group", undefined);
+	radioGroup.orientation = "row";
+	radioGroup.alignChildren = "left";
+	radioGroup.add("radiobutton", undefined, "Double");
+	radioGroup.add("radiobutton", undefined, "One");
+	radioGroup.add("radiobutton", undefined, "Space");
+	radioGroup.children[0].value = true;
+
+	var buttonGroup = win.add("group", undefined);
+	buttonGroup.orientation = "row";
+	var importButton = buttonGroup.add("button", undefined, "Clip");
+	var cancelButton = buttonGroup.add("button", undefined, "Cancel");
+
+	cancelButton.onClick = function(){
+		win.hide();
+	}
+
+	importButton.onClick = function(){
+		if(editInText.text!=""){
+			var video = OnlyOneClip();
+			var timeLine = RexOnlyOneClip();
+			if(video!= null && timeLine!= null){
+				CutInNewComposition(video, timeLine);
+			}
+		}else{
+			alert("Please input the TimeLine!");
+		}
+	}
+
+	function RexOnlyOneClip(){
+		var rexArray = new Array();
+		var timeLine = new Array();
+		var textArray = CheckOutText(editInText.text);
+		var k = SelectRadioButton(radioGroup);
+		var re = null;
+		switch(k){
+			case 0: 
+				re = REX.onlyOneClipRex_Double;  
+				break;
+			case 1:
+				re = REX.onlyOneClipRex_One;
+				break;
+			case 2:
+				re = REX.onlyOneClipRex_Space;
+				break;
+		}
+		
+		for(var i=0; i<textArray.length; i++){
+			if(re.exec(textArray[i]) == null){
+				alert("Error! Please checkout your data! The Line " + i + "data of " +  textArray[i] +  "has problem!", "REX Error");
+			}
+			rexArray[i] = re.exec(textArray[i]);
+			rexArray[i].splice(0,1);
+		}		
+
+		for(var i=0; i<rexArray.length; i++){
+			timeLine[i] = {
+				inTime: CreateTimeObject(rexArray[i][0], rexArray[i][1], rexArray[i][2], rexArray[i][3]),
+				outTime: CreateTimeObject(rexArray[i][4], rexArray[i][5], rexArray[i][6], rexArray[i][7])
+			};
+		}
+		return timeLine;
+	}
+
+	function OnlyOneClip(){
+		if(app.project.numItems == 0){
+			alert("Please select video!");
+		}else{
+				for(var i=0; i<app.project.numItems; i++){
+					if(app.project.items[i+1].selected == true){
+						return app.project.items[i+1];
+					}
+					if(i+1 == app.project.numItems){
+						alert("Please select video!");
+				}
+			}
+		}
+		
+	}
+
+	function PrintTimeLine(timeLine){
+		var result = "";
+		for(var i=0; i<timeLine.length; i++){
+			result = result + "InTime:" + timeLine[i].inTime.PrintTime() + "\nOutTime:" + timeLine[i].outTime.PrintTime() + "\n";
+		}
+		return result;
+	}
+
+	function CutInNewComposition(video, timeLine){
+		var index = 0;
+		var newComp = app.project.items.addComp(video.name, winMain.compositionWidth, winMain.compositionHeight, 1, 3600, winMain.frameRate);
+		newComp.openInViewer();
+		for(var i=0; i<timeLine.length; i++){
+			var layer = newComp.layers.add(video);
+			layer.inPoint = timeLine[i].inTime.totalSecond;
+			layer.outPoint = timeLine[i].outTime.totalSecond;
+			layer.startTime = index - timeLine[i].inTime.totalSecond;
+			index = index + layer.outPoint - layer.inPoint;
+		}
+
+	}
+
+	return win;
 }
 
 
@@ -231,7 +367,18 @@ function CreateTimeObject(hour, minute, second, millisecond){           //时间
         return obj;
     }
 
-function CheckOutText(file){
+function CheckOutText(text){
+	if(text!=null){
+		var textArray = new Array();
+		textArray = text.split("\n");
+		textArray = CheckOutArraySpace(textArray);
+		return textArray;
+	}else{
+		alert("text is null!");
+	}
+}
+
+function CheckOutFile(file){
     if(file!=null){
             var a = file.read();
             var textArray = new Array();
@@ -253,10 +400,17 @@ function CheckOutArraySpace(array){
             }
         }
         return array;
-    }
+}
 
+function SelectRadioButton(radioArray){
+	for(var i=0; i<radioArray.children.length; i++){
+		if(radioArray.children[i].value == true){
+			return i;
+		}
+	}
+}
 
 var winMain = CreateMainUI();
 var winNormalFirstClip = CreateWinNormalFirstClipUI();
+var winOnlyOneClip = CreateOnlyOneClipUI();
 winMain.show();
-
