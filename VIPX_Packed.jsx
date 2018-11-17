@@ -3,6 +3,7 @@ var winNormalFirstClipTitle = "VIPX_NormalFirstClip";
 var winOnlyOneClipTitle = "VIPX_OnlyOneClip";
 var winDoubleSoundClipTitle = "VIPX_DoubleSoundClip";
 var winAddSubtitlesTitle = "VIPX_AddSubtitles";
+var winAddMarkerTitle = "VIPX_AddMarker";
 
 var aboutMessage = "The JS is packed.\n"+
                                 "made by DongDong   ver:1.0";
@@ -53,6 +54,10 @@ function CreateMainUI(){
 	subTitleSettingsPanel.orientation = "row";
 	var buttonAddSubtitles = subTitleSettingsPanel .add("button", undefined, winAddSubtitlesTitle);
 
+	var markerSettingsPanel = winMain.add("Panel", undefined, "Mark Functions");
+	markerSettingsPanel.orientation = "row";
+	var buttonAddMarker = markerSettingsPanel.add("button", undefined, winAddMarkerTitle);
+
 	buttonNormalFirstClip.onClick = function(){
 			ResetSettings();
 			winNormalFirstClip.show();	
@@ -66,6 +71,11 @@ function CreateMainUI(){
 	buttonAddSubtitles.onClick = function(){
 		ResetSettings();
 		winAddSubtitles.show();
+	}
+
+	buttonAddMarker.onClick = function(){
+		ResetSettings();
+		winAddMarker.show();
 	}
 
 	function ResetSettings(){
@@ -179,7 +189,7 @@ function CreateWinNormalFirstClipUI(){
 			
 	 }
 
-	 function PrintArray(array){
+	 function PrintTimeLine(array){
 		var result = "";
 		for(var i=0; i<array.length; i++){
 			result = result + "Num:" + i + "  Path:" + array[i].path + " ImTime:" + array[i].inTime.PrintTime() + " OutTime" + array[i].outTime.PrintTime() + "\n";
@@ -303,14 +313,76 @@ function CreateOnlyOneClipUI(){
 
 function CreateAddSubtitlesUI(){
 	var win = new Window("palette", winAddSubtitlesTitle, undefined, {resizeable:true, closeButton:false});
-	var cancelButton = win.add("button", undefined, "Cancel");
+	win.alignChildren = "center";
+
+	var timeLinePanel = win.add("panel", undefined, "TimeLine:");
+	var editInText = timeLinePanel.add("edittext", [0,0,1000,300], "",  {resizeable:true,multiline: true, wantReturn: true});
+
+	var groupButton = win.add("group", undefined);
+	groupButton.orientation = "row";
+	var importButton = groupButton.add("button", undefined, "Import");
+	var cancelButton = groupButton.add("button", undefined, "Cancel");
+
+	importButton.onClick = function(){
+		if(editInText.text != ""){
+			var array = CheckOutText(editInText.text);
+			alert(array);
+			array = RexTimeLineText(array);
+			alert(array);
+		}
+	}
+
+	cancelButton.onClick = function(){
+		win.hide();
+	}
+
+	function RexTimeLineText(array){
+        var rexArray = new Array();
+        var sequenceArray = new Array();
+        var re = /^\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\-\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*\:\s*(\w{1,2})\s*(.*)$/;
+        //sequenceArray[5] = re.exec(array[5]);
+        for(var i=0; i<array.length; i++){
+                if(re.exec (array[i]) == null){
+                        alert("Error! Please CheckOut your data! The Line " + i +   " data of   '"+ array[i] + "'   has problem!", "REX Error");
+                    }
+                rexArray[i] = re.exec (array[i]);
+                rexArray[i].splice (0,1);
+            }
+        for(var j=0; j<rexArray.length; j++){
+				sequenceArray[j] = {
+					inTime: CreateTimeObject(rexArray[j][0], rexArray[j][1], rexArray[j][2], rexArray[j][3]),
+					outTime: CreateTimeObject(rexArray[j][4], rexArray[j][5], rexArray[j][6], rexArray[j][7]),
+					text: rexArray[j][8]
+				};
+            }
+        return rexArray;
+    }
+	return win;
+}
+
+function CreateAddMakerUI(){
+	var win = new Window("palette", winAddMarkerTitle, undefined, {resizeable:true, closeButton:false});
+	win.alignChildren = "center";
+
+	var timeLinePanel = win.add("panel", undefined, "TimeLine:");
+	var editInText = timeLinePanel.add("edittext", [0,0,1000,300], "",  {resizeable:true,multiline: true, wantReturn: true});
+
+	var groupButton = win.add("group", undefined);
+	groupButton.orientation = "row";
+	var addMarkerButton = groupButton.add("button", undefined, "AddMarker");
+	var cancelButton = groupButton.add("button", undefined, "Cancel");
+
+	addMarkerButton.onClick = function(){
+		if(editInText.text != ""){
+			PrintArray(CheckOutText(editInText.text));
+		}
+	}
 
 	cancelButton.onClick = function(){
 		win.hide();
 	}
 	return win;
 }
-
 
 function CreateTimeObject(hour, minute, second, millisecond){           //时间类
         
@@ -381,10 +453,22 @@ function CreateTimeObject(hour, minute, second, millisecond){           //时间
         return obj;
     }
 
-function CheckOutText(text){
+
+function PrintArray(array){
+	var result = "";
+	for(var i=0; i<array.length; i++){
+		result = result + "NUM" + (i+1) +":    " +  array[i] + "\n";
+	}
+	alert(result);
+}
+
+function CheckOutText(text){					//根据字符串回车返回数组
 	if(text!=null){
+		//var re = /\d{1,2}\:\d{1,2}\:\d{1,2}\:\d{1,2}\-\d{1,2}\:\d{1,2}\:\d{1,2}\:\d{1,2}/;
+		//var re = /\w/;
 		var textArray = new Array();
-		textArray = text.split("\n");
+		textArray = text.split("@");
+		//textArray = text.split(re);
 		textArray = CheckOutArraySpace(textArray);
 		return textArray;
 	}else{
@@ -408,12 +492,19 @@ function CheckOutFile(file){
 function CheckOutArraySpace(array){
     var re = /\w/g;
     for(var i=0; i<array.length; i++){
+		//array[i] = array[i].replace(/\n/, "");
+		for(var i=0; i<array.length; i++){
+		var n = (array[i].split("\n")).length-1;
+		for(var j=0; j<n; j++){
+			array[i] = array[i].replace(/\n/, "");
+		}
         if(!re.test(array[i])){
                 array.splice(i, 1);
                 i = i-1;
             }
         }
         return array;
+	}
 }
 
 function SelectRadioButton(radioArray){
@@ -428,4 +519,5 @@ var winMain = CreateMainUI();
 var winNormalFirstClip = CreateWinNormalFirstClipUI();
 var winOnlyOneClip = CreateOnlyOneClipUI();
 var winAddSubtitles = CreateAddSubtitlesUI();
+var winAddMarker = CreateAddMakerUI();
 winMain.show();
