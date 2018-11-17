@@ -36,8 +36,8 @@ var REX = {
 };
 
 
-function CreateMainUI(){
-	var winMain = new Window("palette", winMainTitle, undefined,{resizeable:true});
+function CreateMainUI(thisObj){
+	var winMain =  (thisObj instanceof Panel) ? thisObj : new Window("palette", "My Tools", [100, 100, 300, 300]);
 	winMain.frameRate = null;
 	winMain.compositionWidth = null;
 	winMain.compositionHeight = null;
@@ -664,9 +664,8 @@ function SelectRadioButton(radioArray){
 	}
 }
 
-var winMain = CreateMainUI();
+var winMain = CreateMainUI(this);
 var winNormalFirstClip = CreateWinNormalFirstClipUI();
 var winOnlyOneClip = CreateOnlyOneClipUI();
 var winAddSubtitles = CreateAddSubtitlesUI();
 var winAddMarker = CreateAddMakerUI();
-winMain.show();
