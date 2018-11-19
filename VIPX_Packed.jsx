@@ -3,7 +3,9 @@ var winNormalFirstClipTitle = "VIPX_NormalFirstClip";
 var winOnlyOneClipTitle = "VIPX_OnlyOneClip";
 var winDoubleSoundClipTitle = "VIPX_DoubleSoundClip";
 var winAddSubtitlesTitle = "VIPX_AddSubtitles";
+var winAddKeyWordTitle = "VIPX_AddKeyWord";
 var winAddMarkerTitle = "VIPX_AddMarker";
+
 
 var aboutMessage = "The JS is packed.\n"+
                                 "made by DongDong   ver:1.0";
@@ -66,6 +68,7 @@ function CreateMainUI(){
 	var subTitleSettingsPanel = winMain.add("Panel", undefined, "Subtitle Functions");
 	subTitleSettingsPanel.orientation = "row";
 	var buttonAddSubtitles = subTitleSettingsPanel .add("button", undefined, winAddSubtitlesTitle);
+	var buttonAddKeyWords = subTitleSettingsPanel.add("button", undefined, winAddKeyWordTitle);
 
 	var markerSettingsPanel = winMain.add("Panel", undefined, "Mark Functions");
 	markerSettingsPanel.orientation = "row";
@@ -84,6 +87,11 @@ function CreateMainUI(){
 	buttonAddSubtitles.onClick = function(){
 		ResetSettings();
 		winAddSubtitles.show();
+	}
+
+	buttonAddKeyWords.onClick = function(){
+		ResetSettings();
+		winAddKeyWord.show();
 	}
 
 	buttonAddMarker.onClick = function(){
@@ -417,6 +425,77 @@ function CreateAddSubtitlesUI(){
 	return win;
 }
 
+function CreateAddKeyWordUI(){
+	var win = new Window("palette", winAddSubtitlesTitle, undefined, {resizeable:true, closeButton:false});
+	win.alignChildren = "center";
+
+	var folderPathPanel = win.add("panel", undefined, "FolderPath");
+	folderPathPanel.orientation = "row";
+	folderPathPanel.add("statictext", undefined, "Folder Path: ");
+	var folderPathEditText =  folderPathPanel.add("edittext", undefined, "Imput your folder path!");
+	folderPathEditText.characters = 30;
+
+	var timeLinePanel = win.add("panel", undefined, "TimeLine:");
+	var timeLineText = timeLinePanel.add("edittext", [0,0,250,300], "",  {resizeable:true,multiline: true, wantReturn: true});
+
+	var radioGroup = win.add("Group", undefined);
+	radioGroup.orientation = "row";
+	radioGroup.alignChildren = "left";
+	radioGroup.add("radiobutton", undefined, "Double");
+	radioGroup.add("radiobutton", undefined, "One");
+	radioGroup.add("radiobutton", undefined, "Space");
+	radioGroup.children[0].value = true;
+
+	var groupButton = win.add("group", undefined);
+	groupButton.orientation = "row";
+	var importButton = groupButton.add("button", undefined, "Import");
+	var cancelButton = groupButton.add("button", undefined, "Cancel");
+
+	importButton.onClick = function(){
+		if(folderPathEditText!="" && timeLineText.text!= ""){
+			var textArray = CheckOutText(timeLineText.text);
+			var sequenceArray = RexAddKeyWord(folderPathEditText.text, textArray);
+			alert(sequenceArray[2].path);
+		}else{
+			alert("Please input timeLine and folder path!");
+		}
+	}
+
+	function RexAddKeyWord(folderPath, array){
+		var rexArray = new Array();
+		var sequenceArray = new Array();
+		var re = null;
+		var k = SelectRadioButton(radioGroup);
+		switch(k){
+			case 0: re = REX.addSubtitlesRex_Double; break;
+			case 1: re = REX.addSubtitlesRex_One; break;
+			case 2: re = REX.addSubtitlesRex_Space; break;
+		}
+		for(var i=0; i<array.length; i++){
+			if(re.exec(array[i]) == null){
+				alert("Error! Please checkout your data! The Line " + i + "data of " +  textArray[i] +  "has problem!", "REX Error");
+			}
+			rexArray[i] = re.exec(array[i])
+			rexArray[i].splice(0,1);
+		}
+		for(var i=0; i<rexArray.length; i++){
+			sequenceArray[i] = {
+				inTime: CreateTimeObject(rexArray[i][0], rexArray[i][1],rexArray[i][2],rexArray[i][3]),
+				outTime: CreateTimeObject(rexArray[i][4], rexArray[i][5],rexArray[i][6],rexArray[i][7]),
+				path: folderPath + "\\"+ rexArray[i][8] + ".png"
+			};
+		}
+		return sequenceArray;
+	}
+
+
+	cancelButton.onClick = function(){
+		win.hide();
+	}
+
+	return win;
+}
+
 function CreateAddMakerUI(){
 	var win = new Window("palette", winAddMarkerTitle, undefined, {resizeable:true, closeButton:false});
 	win.alignChildren = "center";
@@ -668,5 +747,6 @@ var winMain = CreateMainUI();
 var winNormalFirstClip = CreateWinNormalFirstClipUI();
 var winOnlyOneClip = CreateOnlyOneClipUI();
 var winAddSubtitles = CreateAddSubtitlesUI();
+var winAddKeyWord = CreateAddKeyWordUI();
 var winAddMarker = CreateAddMakerUI();
 winMain.show();

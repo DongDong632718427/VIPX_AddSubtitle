@@ -1,9 +1,11 @@
-﻿var winMainTitle = "VIPX_ScriptPackage";
+﻿var myPanelTitle = "VIPX_ScriptPackage";
 var winNormalFirstClipTitle = "VIPX_NormalFirstClip";
 var winOnlyOneClipTitle = "VIPX_OnlyOneClip";
 var winDoubleSoundClipTitle = "VIPX_DoubleSoundClip";
 var winAddSubtitlesTitle = "VIPX_AddSubtitles";
+var winAddKeyWordTitle = "VIPX_AddKeyWord";
 var winAddMarkerTitle = "VIPX_AddMarker";
+
 
 var aboutMessage = "The JS is packed.\n"+
                                 "made by DongDong   ver:1.0";
@@ -37,39 +39,27 @@ var REX = {
 
 
 function CreateMainUI(thisObj){
-	var winMain =  (thisObj instanceof Panel) ? thisObj : new Window("palette", "My Tools", [100, 100, 300, 300]);
-	winMain.frameRate = null;
-	winMain.compositionWidth = null;
-	winMain.compositionHeight = null;
+	var myPanel = thisObj;
+	myPanel.frameRate = null;
+	myPanel.compositionWidth = null;
+	myPanel.compositionHeight = null;
 
-	winMain.alignChildren = "left";
-
-	var settingsPanel = winMain.add("panel", undefined, "Settings");
-	settingsPanel.orientation = "row";
-
-	var statictextCompositionWidth = settingsPanel.add("statictext", undefined, "Compostion Width:");
-	var editTextCompostionWidth = settingsPanel.add("edittext", undefined, compositionWidth);
-	editTextCompostionWidth.characters = 5;
-	var statictextCompositionHeight = settingsPanel.add("statictext", undefined, "Compostion Height:");
-	var editTextCompostionHeight = settingsPanel.add("edittext", undefined, compositionHeight);
-	editTextCompostionHeight.characters = 5;
-	var staticTextFrameRate = settingsPanel.add("statictext", undefined, "FrameRate:");
-	var editTextFrameRate = settingsPanel.add("edittext", undefined, frameRate);
-	editTextFrameRate.characters = 4;
-
-	var clipSettingsPanel = winMain.add("Panel", undefined, "Clip Functions");
-	clipSettingsPanel.orientation = "row";
-	var buttonOnlyOneClip = clipSettingsPanel.add("button",undefined, winOnlyOneClipTitle);
-	var buttonNormalFirstClip = clipSettingsPanel.add("button", undefined, winNormalFirstClipTitle);
-	var buttonDoubleSoundClip = clipSettingsPanel.add("button", undefined, winDoubleSoundClipTitle);
-
-	var subTitleSettingsPanel = winMain.add("Panel", undefined, "Subtitle Functions");
-	subTitleSettingsPanel.orientation = "row";
-	var buttonAddSubtitles = subTitleSettingsPanel .add("button", undefined, winAddSubtitlesTitle);
-
-	var markerSettingsPanel = winMain.add("Panel", undefined, "Mark Functions");
-	markerSettingsPanel.orientation = "row";
-	var buttonAddMarker = markerSettingsPanel.add("button", undefined, winAddMarkerTitle);
+	settingsPanel=myPanel.add("panel",[5,5,487,70],"settingsPanel");
+    statictextCompositionWidth=settingsPanel.add("statictext",[0,20,110,50] ,"Compositon Width:",{multiline:true});
+    editTextCompostionWidth=settingsPanel.add("edittext",[100,17,150,37] ,"1440",{readonly:0,noecho:0,borderless:0,multiline:0,enterKeySignalsOnChange:0});
+    statictextCompositionHeight=settingsPanel.add("statictext",[180,20,290,50] ,"Compostion Height:",{multiline:true});
+    editTextCompostionHeight=settingsPanel.add("edittext",[280,17,330,37] ,"1080",{readonly:0,noecho:0,borderless:0,multiline:0,enterKeySignalsOnChange:0});
+    staticTextFrameRate=settingsPanel.add("statictext",[360,20,470,50] ,"FrameRate:",{multiline:true});
+    editTextFrameRate=settingsPanel.add("edittext",[420,17,470,37] ,"30.0",{readonly:0,noecho:0,borderless:0,multiline:0,enterKeySignalsOnChange:0});
+    clipSettingsPanel=myPanel.add("panel",[5,80,487,160],"Clip Functions");
+    buttonOnlyOneClip=clipSettingsPanel.add("button",[10,20,140,45],"VIPX_OnlyOneClip");
+    buttonNormalFirstClip=clipSettingsPanel.add("button",[160,20,290,45],"VIPX_NormalFirstClip");
+    buttonDoubleSoundClip=clipSettingsPanel.add("button",[310,20,440,45],"VIPX_DoubleSoundClip");
+    subTitleSettingsPanel=myPanel.add("panel",[5,170,487,250],"Subtitle Functions");
+    buttonAddSubtitles=subTitleSettingsPanel.add("button",[10,20,140,45],"VIPX_AddSubtitles");
+    buttonAddKeyWords=subTitleSettingsPanel.add("button",[160,20,290,45],"VIPX_AddKeyWord");
+    markerSettingsPanel=myPanel.add("panel",[5,260,487,340],"Mark Functions");
+    buttonAddMarker=markerSettingsPanel.add("button",[10,20,140,45],"VIPX_AddMarker");
 
 	buttonNormalFirstClip.onClick = function(){
 			ResetSettings();
@@ -86,17 +76,22 @@ function CreateMainUI(thisObj){
 		winAddSubtitles.show();
 	}
 
+	buttonAddKeyWords.onClick = function(){
+		ResetSettings();
+		winAddKeyWord.show();
+	}
+
 	buttonAddMarker.onClick = function(){
 		ResetSettings();
 		winAddMarker.show();
 	}
 
 	function ResetSettings(){
-		winMain.frameRate = parseFloat(editTextFrameRate.text);
-		winMain.compositionWidth = parseInt(editTextCompostionWidth.text);
-		winMain.compositionHeight = parseInt(editTextCompostionHeight.text);
+		myPanel.frameRate = parseFloat(editTextFrameRate.text);
+		myPanel.compositionWidth = parseInt(editTextCompostionWidth.text);
+		myPanel.compositionHeight = parseInt(editTextCompostionHeight.text);
 	}
-	return winMain;
+	return myPanel;
 }
 
 function CreateWinNormalFirstClipUI(){
@@ -186,7 +181,7 @@ function CreateWinNormalFirstClipUI(){
 		if(videoArray != null){
 			var index = 0;
 			var folder = app.project.items.addFolder("VideoFootage");
-			var firstClipComp = app.project.items.addComp("FirstClip", winMain.compositionWidth, winMain.compositionHeight, 1, 3600, winMain.frameRate);
+			var firstClipComp = app.project.items.addComp("FirstClip", myPanel.compositionWidth, myPanel.compositionHeight, 1, 3600, myPanel.frameRate);
 			firstClipComp.openInViewer();
 			for(i=0; i<array.length; i++){
 					videoArray[i].parentFolder = folder;
@@ -309,7 +304,7 @@ function CreateOnlyOneClipUI(){
 
 	function CutInNewComposition(video, timeLine){
 		var index = 0;
-		var newComp = app.project.items.addComp(video.name, winMain.compositionWidth, winMain.compositionHeight, 1, 3600, winMain.frameRate);
+		var newComp = app.project.items.addComp(video.name, myPanel.compositionWidth, myPanel.compositionHeight, 1, 3600, myPanel.frameRate);
 		newComp.openInViewer();
 		for(var i=0; i<timeLine.length; i++){
 			var layer = newComp.layers.add(video);
@@ -395,7 +390,7 @@ function CreateAddSubtitlesUI(){
 
 	function ImportToAe_AddSubtitles(array){
 		alert(PrintAddSubtites(array));
-        var newComp = app.project.items.addComp("SubTitles", winMain.compositionWidth, winMain.compositionHeight, 1, 3600, winMain.frameRate);
+        var newComp = app.project.items.addComp("SubTitles", myPanel.compositionWidth, myPanel.compositionHeight, 1, 3600, myPanel.frameRate);
         newComp.openInViewer();
         for(var i=0; i<array.length; i++){
                 var textLayer = newComp.layers.addText(array[i].text);
@@ -413,6 +408,77 @@ function CreateAddSubtitlesUI(){
                 textLayer.outPoint = array[i].outTime.totalSecond;
             }        
     }
+
+	return win;
+}
+
+function CreateAddKeyWordUI(){
+	var win = new Window("palette", winAddSubtitlesTitle, undefined, {resizeable:true, closeButton:false});
+	win.alignChildren = "center";
+
+	var folderPathPanel = win.add("panel", undefined, "FolderPath");
+	folderPathPanel.orientation = "row";
+	folderPathPanel.add("statictext", undefined, "Folder Path: ");
+	var folderPathEditText =  folderPathPanel.add("edittext", undefined, "Imput your folder path!");
+	folderPathEditText.characters = 30;
+
+	var timeLinePanel = win.add("panel", undefined, "TimeLine:");
+	var timeLineText = timeLinePanel.add("edittext", [0,0,250,300], "",  {resizeable:true,multiline: true, wantReturn: true});
+
+	var radioGroup = win.add("Group", undefined);
+	radioGroup.orientation = "row";
+	radioGroup.alignChildren = "left";
+	radioGroup.add("radiobutton", undefined, "Double");
+	radioGroup.add("radiobutton", undefined, "One");
+	radioGroup.add("radiobutton", undefined, "Space");
+	radioGroup.children[0].value = true;
+
+	var groupButton = win.add("group", undefined);
+	groupButton.orientation = "row";
+	var importButton = groupButton.add("button", undefined, "Import");
+	var cancelButton = groupButton.add("button", undefined, "Cancel");
+
+	importButton.onClick = function(){
+		if(folderPathEditText!="" && timeLineText.text!= ""){
+			var textArray = CheckOutText(timeLineText.text);
+			var sequenceArray = RexAddKeyWord(folderPathEditText.text, textArray);
+			alert(sequenceArray[2].path);
+		}else{
+			alert("Please input timeLine and folder path!");
+		}
+	}
+
+	function RexAddKeyWord(folderPath, array){
+		var rexArray = new Array();
+		var sequenceArray = new Array();
+		var re = null;
+		var k = SelectRadioButton(radioGroup);
+		switch(k){
+			case 0: re = REX.addSubtitlesRex_Double; break;
+			case 1: re = REX.addSubtitlesRex_One; break;
+			case 2: re = REX.addSubtitlesRex_Space; break;
+		}
+		for(var i=0; i<array.length; i++){
+			if(re.exec(array[i]) == null){
+				alert("Error! Please checkout your data! The Line " + i + "data of " +  textArray[i] +  "has problem!", "REX Error");
+			}
+			rexArray[i] = re.exec(array[i])
+			rexArray[i].splice(0,1);
+		}
+		for(var i=0; i<rexArray.length; i++){
+			sequenceArray[i] = {
+				inTime: CreateTimeObject(rexArray[i][0], rexArray[i][1],rexArray[i][2],rexArray[i][3]),
+				outTime: CreateTimeObject(rexArray[i][4], rexArray[i][5],rexArray[i][6],rexArray[i][7]),
+				path: folderPath + "\\"+ rexArray[i][8] + ".png"
+			};
+		}
+		return sequenceArray;
+	}
+
+
+	cancelButton.onClick = function(){
+		win.hide();
+	}
 
 	return win;
 }
@@ -571,7 +637,7 @@ function CreateTimeObject(hour, minute, second, millisecond){           //时间
             }
         
         function CalculateTotalFrame(){
-                    var result = (obj.millisecond/30 + obj.second + obj.minute*60 + obj.hour*60*60)*winMain.frameRate;
+                    var result = (obj.millisecond/30 + obj.second + obj.minute*60 + obj.hour*60*60)*myPanel.frameRate;
                     result = Math.floor(result);
                     return result;
 
@@ -664,8 +730,9 @@ function SelectRadioButton(radioArray){
 	}
 }
 
-var winMain = CreateMainUI(this);
+var myPanel = CreateMainUI(this);
 var winNormalFirstClip = CreateWinNormalFirstClipUI();
 var winOnlyOneClip = CreateOnlyOneClipUI();
 var winAddSubtitles = CreateAddSubtitlesUI();
+var winAddKeyWord = CreateAddKeyWordUI();
 var winAddMarker = CreateAddMakerUI();

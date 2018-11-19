@@ -1,0 +1,227 @@
+<xml>
+  <info>
+    <size>500,500</size>
+    <name>new project</name>
+  </info>
+  <item>
+    <info>
+      <type>[object Panel]</type>
+      <location>5,5</location>
+      <size>482,65</size>
+      <name>settingsPanel</name>
+      <text>settingsPanel</text>
+      <value>NaN</value>
+      <helpTip></helpTip>
+      <color>NaN</color>
+    </info>
+    <group>
+      <item>
+        <info>
+          <type>[object StaticText]</type>
+          <location>0,20</location>
+          <size>110,30</size>
+          <name>statictextCompositionWidth</name>
+          <text>Compositon Width:</text>
+          <value>NaN</value>
+          <helpTip></helpTip>
+          <color>NaN</color>
+        </info>
+      </item>
+      <item>
+        <info>
+          <type>[object EditText]</type>
+          <location>100,17</location>
+          <size>50,20</size>
+          <name>editTextCompostionWidth</name>
+          <text>1440</text>
+          <value>NaN</value>
+          <helpTip></helpTip>
+          <BGColor>0.62352941176471,0.62352941176471,0.62352941176471</BGColor>
+          <fontColor>0,0,0</fontColor>
+          <colorCheck>0</colorCheck>
+          <readonly>0</readonly>
+          <noecho>0</noecho>
+          <borderless>0</borderless>
+          <multiline>0</multiline>
+          <enterKeySignalsOnChange>0</enterKeySignalsOnChange>
+        </info>
+      </item>
+      <item>
+        <info>
+          <type>[object StaticText]</type>
+          <location>180,20</location>
+          <size>110,30</size>
+          <name>statictextCompositionHeight</name>
+          <text>Compostion Height:</text>
+          <value>NaN</value>
+          <helpTip></helpTip>
+          <color>undefined</color>
+        </info>
+      </item>
+      <item>
+        <info>
+          <type>[object EditText]</type>
+          <location>280,17</location>
+          <size>50,20</size>
+          <name>editTextCompostionHeight</name>
+          <text>1080</text>
+          <value>NaN</value>
+          <helpTip></helpTip>
+          <BGColor>0.62352941176471,0.62352941176471,0.62352941176471</BGColor>
+          <fontColor>0,0,0</fontColor>
+          <colorCheck>0</colorCheck>
+          <readonly>0</readonly>
+          <noecho>0</noecho>
+          <borderless>0</borderless>
+          <multiline>0</multiline>
+          <enterKeySignalsOnChange>0</enterKeySignalsOnChange>
+        </info>
+      </item>
+      <item>
+        <info>
+          <type>[object StaticText]</type>
+          <location>360,20</location>
+          <size>110,30</size>
+          <name>staticTextFrameRate</name>
+          <text>FrameRate:</text>
+          <value>NaN</value>
+          <helpTip></helpTip>
+          <color>undefined</color>
+        </info>
+      </item>
+      <item>
+        <info>
+          <type>[object EditText]</type>
+          <location>420,17</location>
+          <size>50,20</size>
+          <name>editTextFrameRate</name>
+          <text>30.0</text>
+          <value>NaN</value>
+          <helpTip></helpTip>
+          <BGColor>0.62352941176471,0.62352941176471,0.62352941176471</BGColor>
+          <fontColor>0,0,0</fontColor>
+          <colorCheck>0</colorCheck>
+          <readonly>0</readonly>
+          <noecho>0</noecho>
+          <borderless>0</borderless>
+          <multiline>0</multiline>
+          <enterKeySignalsOnChange>0</enterKeySignalsOnChange>
+        </info>
+      </item>
+    </group>
+  </item>
+  <item>
+    <info>
+      <type>[object Panel]</type>
+      <location>5,80</location>
+      <size>482,80</size>
+      <name>clipSettingsPanel</name>
+      <text>Clip Functions</text>
+      <value>NaN</value>
+      <helpTip></helpTip>
+      <color>undefined</color>
+    </info>
+    <group>
+      <item>
+        <info>
+          <type>[object Button]</type>
+          <location>10,20</location>
+          <size>130,25</size>
+          <name>buttonOnlyOneClip</name>
+          <text>VIPX_OnlyOneClip</text>
+          <value>NaN</value>
+          <helpTip></helpTip>
+          <color>undefined</color>
+        </info>
+      </item>
+      <item>
+        <info>
+          <type>[object Button]</type>
+          <location>160,20</location>
+          <size>130,25</size>
+          <name>buttonNormalFirstClip</name>
+          <text>VIPX_NormalFirstClip</text>
+          <value>NaN</value>
+          <helpTip></helpTip>
+          <color>undefined</color>
+        </info>
+      </item>
+      <item>
+        <info>
+          <type>[object Button]</type>
+          <location>310,20</location>
+          <size>130,25</size>
+          <name>buttonDoubleSoundClip</name>
+          <text>VIPX_DoubleSoundClip</text>
+          <value>NaN</value>
+          <helpTip></helpTip>
+          <color>undefined</color>
+        </info>
+      </item>
+    </group>
+  </item>
+  <item>
+    <info>
+      <type>[object Panel]</type>
+      <location>5,170</location>
+      <size>482,80</size>
+      <name>subTitleSettingsPanel</name>
+      <text>Subtitle Functions</text>
+      <value>NaN</value>
+      <helpTip></helpTip>
+      <color>NaN</color>
+    </info>
+    <group>
+      <item>
+        <info>
+          <type>[object Button]</type>
+          <location>10,20</location>
+          <size>130,25</size>
+          <name>buttonAddSubtitles</name>
+          <text>VIPX_AddSubtitles</text>
+          <value>NaN</value>
+          <helpTip></helpTip>
+          <color>undefined</color>
+        </info>
+      </item>
+      <item>
+        <info>
+          <type>[object Button]</type>
+          <location>160,20</location>
+          <size>130,25</size>
+          <name>buttonAddKeyWords</name>
+          <text>VIPX_AddKeyWord</text>
+          <value>NaN</value>
+          <helpTip></helpTip>
+          <color>undefined</color>
+        </info>
+      </item>
+    </group>
+  </item>
+  <item>
+    <info>
+      <type>[object Panel]</type>
+      <location>5,260</location>
+      <size>482,80</size>
+      <name>markerSettingsPanel</name>
+      <text>Mark Functions</text>
+      <value>NaN</value>
+      <helpTip></helpTip>
+      <color>NaN</color>
+    </info>
+    <group>
+      <item>
+        <info>
+          <type>[object Button]</type>
+          <location>10,20</location>
+          <size>130,25</size>
+          <name>buttonAddMarker</name>
+          <text>VIPX_AddMarker</text>
+          <value>NaN</value>
+          <helpTip></helpTip>
+          <color>undefined</color>
+        </info>
+      </item>
+    </group>
+  </item>
+</xml>
