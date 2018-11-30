@@ -5,7 +5,9 @@ var winDoubleSoundClipTitle = "VIPX_DoubleSoundClip";
 var winAddSubtitlesTitle = "VIPX_AddSubtitles";
 var winAddKeyWordTitle = "VIPX_AddKeyWord";
 var winAddMarkerTitle = "VIPX_AddMarker";
-
+var winPreComposeTitle = "VIPX_PreCompose";
+var winSortingTitle = "VIPX_Sorting";
+var winMovReplaceTitle = "VIPX_MovReplace"
 
 var aboutMessage = "The JS is packed.\n"+
                                 "made by DongDong   ver:1.0";
@@ -63,7 +65,6 @@ function CreateMainUI(){
 	clipSettingsPanel.orientation = "row";
 	var buttonOnlyOneClip = clipSettingsPanel.add("button",undefined, winOnlyOneClipTitle);
 	var buttonNormalFirstClip = clipSettingsPanel.add("button", undefined, winNormalFirstClipTitle);
-	var buttonDoubleSoundClip = clipSettingsPanel.add("button", undefined, winDoubleSoundClipTitle);
 
 	var subTitleSettingsPanel = winMain.add("Panel", undefined, "Subtitle Functions");
 	subTitleSettingsPanel.orientation = "row";
@@ -73,6 +74,12 @@ function CreateMainUI(){
 	var markerSettingsPanel = winMain.add("Panel", undefined, "Mark Functions");
 	markerSettingsPanel.orientation = "row";
 	var buttonAddMarker = markerSettingsPanel.add("button", undefined, winAddMarkerTitle);
+
+	var projectSettingsPanel = winMain.add("Panel", undefined, "Project Functions");
+	projectSettingsPanel.orientation = "row";
+	var buttonPreCompose = projectSettingsPanel.add("button", undefined,winPreComposeTitle );
+	var buttonSorting = projectSettingsPanel.add("button", undefined, winSortingTitle);
+	var buttonMovReplace = projectSettingsPanel.add("button", undefined, winMovReplaceTitle);
 
 	buttonNormalFirstClip.onClick = function(){
 			ResetSettings();
@@ -99,6 +106,48 @@ function CreateMainUI(){
 		winAddMarker.show();
 	}
 
+	buttonPreCompose.onClick = function(){
+		var video = SelectedClip();
+		var compCollection = PreCompose(video);
+	}
+
+	buttonSorting.onClick = function(){
+		var comp = SelectedClip();
+		if(comp!= null){
+			var layerCollection = comp.layers;
+			if(layerCollection.length!=0){
+				layerCollection[1].moveToEnd();
+				for(var i=0; i<layerCollection.length-1; i++){
+					layerCollection[1].moveBefore(layerCollection[layerCollection.length-i]);
+				}
+			}else{
+				alert("Your layer's number is 0!");
+			}
+		}
+	}
+
+	buttonMovReplace.onClick = function(){
+		alert(123);
+	}
+
+	function PreCompose(comp){
+        comp = comp.duplicate();
+        var newFolder = app.project.items.addFolder("MainComp");
+        var newCompCollection = new Array();
+        
+        for(var i=1; i<comp.layers.length; i++){
+            var inPoint = comp.layers[i+1].inPoint;
+            var outPoint = comp.layers[i+1].outPoint;
+            var startTime = comp.layers[i+1].startTime;
+            newCompCollection[i] = comp.layers.precompose([i+1], "0"+i, true);
+            newCompCollection[i].displayStartTime = inPoint;
+            newCompCollection[i].layers[1].startTime = -inPoint+startTime;
+            newCompCollection[i].duration = outPoint - inPoint;
+            comp.layers[i+1].startTime = inPoint;
+            newCompCollection[i].parentFolder = newFolder;
+        }
+        return newCompCollection;
+    }
 	function ResetSettings(){
 		winMain.frameRate = parseFloat(editTextFrameRate.text);
 		winMain.compositionWidth = parseInt(editTextCompostionWidth.text);
@@ -742,6 +791,22 @@ function SelectRadioButton(radioArray){
 		}
 	}
 }
+
+function SelectedClip(){
+		if(app.project.numItems == 0){
+			alert("Please select video!");
+		}else{
+				for(var i=0; i<app.project.numItems; i++){
+					if(app.project.items[i+1].selected == true){
+						return app.project.items[i+1];
+					}
+					if(i+1 == app.project.numItems){
+						alert("Please select video!");
+				}
+			}
+		}
+		
+	}
 
 var winMain = CreateMainUI();
 var winNormalFirstClip = CreateWinNormalFirstClipUI();
