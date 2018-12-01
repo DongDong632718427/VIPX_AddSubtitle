@@ -127,7 +127,43 @@ function CreateMainUI(){
 	}
 
 	buttonMovReplace.onClick = function(){
-		alert(123);
+        var movArray = GetVideoArray();
+
+        for (var i = 0; i < movArray.length; i++) {
+            var index = movArray[i].name.lastIndexOf(".");
+            var name = movArray[i].name.substring(0, index);
+
+            for (var j = 0; i < app.project.numItems; j++) {
+                if (app.project.items[j + 1].name == name && app.project.items[j + 1].typeName == "Composition") {
+                    //var movLayer = app.project.items[j+1].layers.add(movArray[i]);
+                    for (var k = 0; k < app.project.items[j + 1].numLayers; k++) {
+                        var IndexLayer = app.project.items[j + 1].layers[k + 1].name.lastIndexOf(".");
+                        var nameTypeLayer = app.project.items[j + 1].layers[k + 1].name.substr(IndexLayer + 1);
+                        if (nameTypeLayer == "MP4") {
+                            var MP4Layer = app.project.items[j + 1].layers[k + 1];
+                            var MOVLayer = app.project.items[j + 1].layers.add(movArray[i]);
+                            MOVLayer.position.setValue(MP4Layer.position.value);
+                            MOVLayer.scale.setValue(MP4Layer.scale.value);
+                            MOVLayer.moveBefore(MP4Layer);
+                            MP4Layer.enabled = false;
+                            MP4Layer.parent = MOVLayer;
+                            MP4Layer.locked = true;
+                            var shadowLayer = MOVLayer.duplicate();
+                            shadowLayer.name = "1123456";
+                            shadowLayer.moveAfter(MOVLayer);
+                            shadowLayer.parent = MOVLayer;
+                            shadowLayer.property("effect").addProperty("Drop Shadow");
+                            shadowLayer.property("effect").property("Drop Shadow")(5).setValue(200);
+                            shadowLayer.property("effect").property("Drop Shadow")(6).setValue(1);
+                            shadowLayer.scale.setValue([100, 8]);
+                            break;
+                        }
+
+                    }
+                    break;
+                }
+            }
+        }
 	}
 
 	function PreCompose(comp){
@@ -148,6 +184,25 @@ function CreateMainUI(){
         }
         return newCompCollection;
     }
+
+    function GetVideoArray() {
+        var video = new Array();
+        if (app.project.numItems == 0) {
+            alert("Please select video!");
+        } else {
+            for (var i = 0; i < app.project.numItems; i++) {
+                if (app.project.items[i + 1].selected == true) {
+                    video.push(app.project.items[i + 1]);
+                }
+            }
+            if (video.length == 0) {
+                alert("Please select video!");
+            } else { return video; }
+
+        }
+    }
+
+
 	function ResetSettings(){
 		winMain.frameRate = parseFloat(editTextFrameRate.text);
 		winMain.compositionWidth = parseInt(editTextCompostionWidth.text);
