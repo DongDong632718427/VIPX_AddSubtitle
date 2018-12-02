@@ -1,13 +1,13 @@
-﻿var winMainTitle = "VIPX_ScriptPackage";
-var winNormalFirstClipTitle = "VIPX_NormalFirstClip";
-var winOnlyOneClipTitle = "VIPX_OnlyOneClip";
+﻿var winMainTitle = "After Effect脚本工具包";
+var winNormalFirstClipTitle = "标准粗剪";
+var winOnlyOneClipTitle = "单独粗剪";
 var winDoubleSoundClipTitle = "VIPX_DoubleSoundClip";
-var winAddSubtitlesTitle = "VIPX_AddSubtitles";
-var winAddKeyWordTitle = "VIPX_AddKeyWord";
-var winAddMarkerTitle = "VIPX_AddMarker";
-var winPreComposeTitle = "VIPX_PreCompose";
-var winSortingTitle = "VIPX_Sorting";
-var winMovReplaceTitle = "VIPX_MovReplace"
+var winAddSubtitlesTitle = "添加字幕";
+var winAddKeyWordTitle = "添加关键词";
+var winAddMarkerTitle = "添加标记";
+var winPreComposeTitle = "批量预合成";
+var winSortingTitle = "图层排序";
+var winMovReplaceTitle = "Mov嵌入"
 
 var aboutMessage = "The JS is packed.\n"+
                                 "made by DongDong   ver:1.0";
@@ -134,7 +134,7 @@ function CreateMainUI(){
             var name = movArray[i].name.substring(0, index);
 
             for (var j = 0; i < app.project.numItems; j++) {
-                if (app.project.items[j + 1].name == name && app.project.items[j + 1].typeName == "Composition") {
+                if (app.project.items[j + 1].name == name && app.project.items[j + 1].typeName == "合成") {
                     //var movLayer = app.project.items[j+1].layers.add(movArray[i]);
                     for (var k = 0; k < app.project.items[j + 1].numLayers; k++) {
                         var IndexLayer = app.project.items[j + 1].layers[k + 1].name.lastIndexOf(".");
@@ -149,7 +149,7 @@ function CreateMainUI(){
                             MP4Layer.parent = MOVLayer;
                             MP4Layer.locked = true;
                             var shadowLayer = MOVLayer.duplicate();
-                            shadowLayer.name = "1123456";
+                            shadowLayer.name = "Shadow";
                             shadowLayer.moveAfter(MOVLayer);
                             shadowLayer.parent = MOVLayer;
                             shadowLayer.property("effect").addProperty("Drop Shadow");
