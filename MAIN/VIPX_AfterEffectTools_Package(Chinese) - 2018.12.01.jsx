@@ -152,9 +152,9 @@ function CreateMainUI(){
                             shadowLayer.name = "Shadow";
                             shadowLayer.moveAfter(MOVLayer);
                             shadowLayer.parent = MOVLayer;
-                            shadowLayer.property("effect").addProperty("Drop Shadow");
-                            shadowLayer.property("effect").property("Drop Shadow")(5).setValue(200);
-                            shadowLayer.property("effect").property("Drop Shadow")(6).setValue(1);
+                            shadowLayer.property("effect").addProperty("投影");
+                            shadowLayer.property("effect").property("投影")(5).setValue(200);
+                            shadowLayer.property("effect").property("投影")(6).setValue(1);
                             shadowLayer.scale.setValue([100, 8]);
                             break;
                         }
